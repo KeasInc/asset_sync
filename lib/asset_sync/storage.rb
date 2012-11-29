@@ -137,8 +137,8 @@ module AssetSync
 
       if uncached_files.include?(f)
         log "Not caching file: #{f}!"
-        file.delete(:cache_control)
-        file.delete(:expires)
+        file[:cache_control] = "public, max-age=0"
+        file[:expires] = CGI.rfc1123_date(Time.now - one_year)
       end
 
       gzipped = "#{path}/#{f}.gz"

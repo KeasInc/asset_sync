@@ -35,11 +35,11 @@ module AssetSync
       Array(self.config.uncached_files).each do |uncached|
         case uncached
         when Regexp
-          files += self.uncached_files.select do |file|
+          files += self.local_files.select do |file|
             file =~ uncached
           end
         when String
-          files += self.uncached_files.select do |file|
+          files += self.local_files.select do |file|
             file.split('/').last == uncached
           end
         else

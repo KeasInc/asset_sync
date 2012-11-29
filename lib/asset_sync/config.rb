@@ -11,6 +11,7 @@ module AssetSync
     attr_accessor :fail_silently
     attr_accessor :always_upload
     attr_accessor :ignored_files
+    attr_accessor :uncached_files
     attr_accessor :prefix
     attr_accessor :public_path
     attr_accessor :enabled
@@ -49,6 +50,7 @@ module AssetSync
       self.fail_silently = false
       self.always_upload = []
       self.ignored_files = []
+      self.uncached_files = []
       self.enabled = true
       load_yml! if defined?(Rails) && yml_exists?
     end
@@ -126,6 +128,7 @@ module AssetSync
       self.fail_silently          = yml["fail_silently"] if yml.has_key?("fail_silently")
       self.always_upload          = yml["always_upload"] if yml.has_key?("always_upload")
       self.ignored_files          = yml["ignored_files"] if yml.has_key?("ignored_files")
+      self.uncached_files         = yml["uncached_files"] if yml.has_key?("uncached_files")
 
       # TODO deprecate the other old style config settings. FML.
       self.aws_access_key_id      = yml["aws_access_key"] if yml.has_key?("aws_access_key")

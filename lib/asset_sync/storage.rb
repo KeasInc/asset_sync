@@ -30,6 +30,25 @@ module AssetSync
       self.config.public_path
     end
 
+    def uncached_files
+      files = []
+      Array(self.config.uncached_files).each do |uncached|
+        case uncached
+        when Regexp
+          files += self.uncached_files.select do |file|
+            file =~ uncached
+          end
+        when String
+          files += self.uncached_files.select do |file|
+            file.split('/').last == uncached
+          end
+        else
+          log "Error: please define uncached_files as string or regular expression. #{uncached} (#{uncached.class}) ignored."
+        end
+      end
+      files.uniq
+    end
+
     def ignored_files
       files = []
       Array(self.config.ignored_files).each do |ignore|
@@ -115,6 +134,12 @@ module AssetSync
         :expires => CGI.rfc1123_date(Time.now + one_year),
         :content_type => mime
       }
+
+      if uncached_files.include?(f)
+        log "Not caching file: #{f}!"
+        file.delete(:cache_control)
+        file.delete(:expires)
+      end
 
       gzipped = "#{path}/#{f}.gz"
       ignore = false
